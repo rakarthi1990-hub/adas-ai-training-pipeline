@@ -1,0 +1,42 @@
+project:
+  name: adas-ai-training-pipeline
+  version: "1.0"
+  author: Karthikeyan Rajan
+
+dataset:
+  name: nuScenes
+  version: mini
+  root: ./data/nuscenes
+  split: mini_train
+  classes:
+    - car
+    - pedestrian
+    - bicycle
+    - motorcycle
+    - bus
+    - truck
+    - traffic_cone
+    - barrier
+
+training:
+  model: yolov8n
+  epochs: 30
+  batch_size: 8
+  image_size: 640
+  learning_rate: 0.001
+  val_split: 0.2
+  seed: 42
+  device: cpu  # change to 'cuda' if GPU available
+
+kpi:
+  iou_threshold: 0.5
+  confidence_threshold: 0.25
+  target_map: 0.40
+
+scene_mining:
+  conditions:
+    - night
+    - rain
+    - dense_urban
+    - occlusion
+  min_objects_dense: 10

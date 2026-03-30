@@ -1,0 +1,38 @@
+
+=== nuScenes Mini — Dataset Exploration Report ===
+
+Dataset stats:
+  Scenes:      10
+  Samples:     404
+  Annotations: 18538
+  Classes:     13
+
+Class distribution:
+            class  count  percentage
+              car   7619       41.10
+       pedestrian   5040       27.19
+          barrier   2323       12.53
+      trafficcone   1378        7.43
+            truck    649        3.50
+       motorcycle    471        2.54
+              bus    410        2.21
+          bicycle    243        1.31
+     construction    196        1.06
+pushable_pullable     82        0.44
+          trailer     60        0.32
+     bicycle_rack     54        0.29
+           debris     13        0.07
+
+Safety-critical observations:
+  Low visibility objects (0-40%): 5480 
+  Zero LiDAR point objects:       4278
+  Pedestrian annotations:         5040
+
+Scene density:
+  Min objects/sample: 8
+  Max objects/sample: 156
+  Mean objects/sample: 45.9
+
+BMW relevance note:
+  High-density scenes and low-visibility objects are primary
+  candidates for scene mining in Week 3 (closed-loop evaluation).
