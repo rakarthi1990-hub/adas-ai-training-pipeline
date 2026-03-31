@@ -80,8 +80,8 @@ cd data \&\& python explore.py
 | Metric | Value | ADAS relevance |
 |---|---|---|
 | Peak scene density | 156 objects/frame | Stress-test for perception models |
-| Low-visibility objects (0–40%) | [your number] | Primary safety-critical detection risk |
-| Zero LiDAR point objects | [your number] | Sensor fusion gap — camera-only fallback needed |
+| Low-visibility objects (0–40%) | 5480 | Primary safety-critical detection risk |
+| Zero LiDAR point objects | 4278 | Sensor fusion gap — camera-only fallback needed |
 | Dominant classes | car, pedestrian | Aligns with ADAS safety-critical targets |
 
 
