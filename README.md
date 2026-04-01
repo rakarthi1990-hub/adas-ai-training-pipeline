@@ -1,6 +1,6 @@
 \## ADAS AI Training Pipeline
 
-\*\***Karthikeyan Rajan**\*\* | Senior ADAS Systems Engineer
+\*\***Karthikeyan Rajan**\*\* | **Senior ADAS Systems Engineer**
 
 
 
@@ -10,8 +10,8 @@ for automotive ADAS perception, built on the nuScenes dataset.
 
 
 
-\## Motivation
-
+\## **Motivation
+**
 This project extends hands-on AI development experience to complement
 
 production-grade ADAS system architecture and series delivery background
@@ -24,7 +24,7 @@ dataset curation → training → scene mining → closed-loop KPI evaluation
 
 
 
-\## Project structure
+\## **Project structure**
 
 | Folder | Purpose |
 
