@@ -1,6 +1,6 @@
-\# ADAS AI Training Pipeline
+\## ADAS AI Training Pipeline
 
-\*\*Karthikeyan Rajan\*\* | Senior ADAS Systems Engineer
+\*\***Karthikeyan Rajan**\*\* | Senior ADAS Systems Engineer
 
 
 
