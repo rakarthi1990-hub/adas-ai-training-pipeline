@@ -1,0 +1,27 @@
+=== Week 3 — Scene Mining Report ===
+
+Total samples analysed: 404
+Safety-critical scenes mined: 358 (88.6%)
+
+Breakdown by mining category:
+  dense_urban             326 scenes  ( 80.7%)  priority: high
+  low_visibility          353 scenes  ( 87.4%)  priority: critical
+  pedestrian_risk         284 scenes  ( 70.3%)  priority: critical
+
+Connection to Week 2 training results:
+  Recall 0.21 on val split — model misses ~79% of objects.
+  Root causes identified by scene mining:
+  1. Low visibility objects → model confidence collapses
+  2. Small distant objects → below model detection threshold
+  3. Dense scenes → overlapping detections, suppressed by NMS
+  4. Multi-pedestrian scenes → safety-critical missed detections
+
+Production implication (ISO 26262 / SOTIF):
+  These mined scenes define the data collection priority for
+  the next training iteration. Targeted augmentation of
+  low-visibility and small-object scenarios is expected to
+  improve recall from 0.21 toward 0.50+ in 2-3 iterations.
+
+Week 4 action:
+  Safety failure chain analysis per mined category.
+  SOTIF mapping: unknown unsafe scenarios → known unsafe → mitigated.
