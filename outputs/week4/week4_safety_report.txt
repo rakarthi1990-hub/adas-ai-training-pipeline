@@ -1,0 +1,117 @@
+=== Week 4 — Safety Failure Analysis Report ===
+Project: ADAS AI Training Pipeline
+Author:  Karthikeyan Rajan | Senior ADAS Systems Engineer
+Date:    April 2026
+
+References: ISO 26262, SOTIF (ISO/PAS 21448), nuScenes dataset
+==========================================================
+
+EXECUTIVE SUMMARY
+----------------------------------------
+This report maps the AI model performance results from Week 2
+(mAP@50: 0.029, recall: 0.21) and scene mining results from
+Week 3 (88.6% safety-critical scenes) to ADAS safety failure
+chains and SOTIF classifications.
+
+The analysis demonstrates that the model's low recall is not
+randomly distributed — it is concentrated in safety-critical
+ODD conditions that constitute the primary failure scenarios
+for production ADAS functions.
+
+FAILURE CHAIN: LOW VISIBILITY
+----------------------------------------
+Condition:          Object visibility 0–40% (occlusion, distance, weather)
+Perception failure: Confidence score below detection threshold → object suppressed
+Decision failure:   Decision layer receives no object input → assumes clear path
+Actuation failure:  No braking or evasive action triggered
+Harm:               Collision with undetected pedestrian or vehicle
+
+Experimental evidence (Week 2):
+  Pedestrian AP@50 = 0.058 — confirmed low recall on occluded objects
+
+SOTIF classification:
+  Known unsafe scenario (visibility degradation is a known ODD limit)
+
+ISO 26262 reference:
+  ASIL-B minimum for pedestrian detection function
+
+Recommended mitigation:
+  Sensor fusion (radar/LiDAR redundancy), multi-frame temporal tracking, ODD exit trigger when visibility below threshold
+
+FAILURE CHAIN: DENSE URBAN
+----------------------------------------
+Condition:          10+ objects per frame — dense urban intersection
+Perception failure: NMS suppresses valid detections due to overlapping bounding boxes
+Decision failure:   Partial object list passed to prediction layer — trajectory estimation incomplete
+Actuation failure:  Incorrect path planning — vehicle proceeds through occupied space
+Harm:               Collision with suppressed (untracked) road user
+
+Experimental evidence (Week 2):
+  Recall 0.21 — 79% of objects missed, dense scenes confirmed in 80.7% of dataset
+
+SOTIF classification:
+  Known unsafe scenario (NMS behaviour in dense scenes is a known limitation)
+
+ISO 26262 reference:
+  SOTIF ISO/PAS 21448 — performance limitation in ODD
+
+Recommended mitigation:
+  Anchor-free detection heads, higher NMS IoU threshold in dense ODDs, multi-camera fusion to reduce single-view occlusion
+
+FAILURE CHAIN: PEDESTRIAN RISK
+----------------------------------------
+Condition:          2+ pedestrians in scene — urban crossing, pavement, school zone
+Perception failure: Low per-class AP (0.058) — pedestrian detections missed or misclassified
+Decision failure:   Pedestrian trajectory not predicted → right-of-way not yielded
+Actuation failure:  Vehicle proceeds without braking or speed reduction
+Harm:               Pedestrian struck at crossing or road crossing event
+
+Experimental evidence (Week 2):
+  Pedestrian AP@50 = 0.058, bicycle AP@50 = 0.003 — safety-critical classes perform worst
+
+SOTIF classification:
+  Known unsafe scenario — pedestrian detection gap is a known SOTIF trigger
+
+ISO 26262 reference:
+  ASIL-C/D for emergency pedestrian braking functions
+
+Recommended mitigation:
+  Dedicated pedestrian detection head, higher resolution input for small objects, class-weighted loss function to prioritise safety-critical classes
+
+==========================================================
+SOTIF TAXONOMY MAPPING
+----------------------------------------
+
+Stage 1 — Unknown unsafe scenarios (identified by this project):
+  - Confidence collapse at 0-40% visibility
+  - NMS suppression in 10+ object density scenes
+  - Pedestrian class underperformance (AP 0.058)
+
+Stage 2 — Known unsafe scenarios (post-analysis):
+  - Above conditions now formally documented
+  - Risk matrix positions all three in unacceptable zone
+  - ODD exit triggers required for each condition
+
+Stage 3 — Mitigated scenarios (recommended actions):
+  - Sensor fusion: radar/LiDAR redundancy for low visibility
+  - Data collection: 5,000+ targeted frames per ODD condition
+  - Model: class-weighted loss, higher resolution for small objects
+  - Validation: per-ODD closed-loop KPI gates before release
+
+==========================================================
+PRODUCTION READINESS ASSESSMENT
+----------------------------------------
+
+Current model state: NOT production ready
+  Recall 0.21 is below minimum threshold for any ADAS function.
+  Pedestrian AP 0.058 is below ASIL-B minimum requirements.
+
+Path to production readiness:
+  1. Expand dataset: 10,000+ samples across all mined ODDs
+  2. Unfreeze backbone: full fine-tuning with sufficient data
+  3. Target KPIs: pedestrian recall > 0.80, overall mAP > 0.50
+  4. Closed-loop validation: per-ODD KPI gates
+  5. Safety concept: ASIL decomposition per function
+
+This analysis provides the data-driven justification for the
+dataset expansion and model improvement roadmap.
