@@ -2,3 +2,34 @@ venv/
 data/nuscenes/
 __pycache__/
 *.pyc
+
+# Virtual environments
+venv/
+venv311/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Datasets
+datasets/
+data/
+
+# Training artifacts
+runs/
+src/runs/
+
+# Model weights
+*.pt
+*.onnx
+
+# Outputs (optional: keep charts if you want)
+outputs/*.csv
+# keep images if useful → comment below if needed
+# outputs/*.png
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
