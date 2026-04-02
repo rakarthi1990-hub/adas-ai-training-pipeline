@@ -1,0 +1,4 @@
+variant,img_size,num_images,avg_latency_ms,fps,model_size_mb
+onnx_fp32_320,320,80,10.11,98.93,11.56
+onnx_fp32_480,480,80,19.77,50.59,11.61
+onnx_fp32_640,640,80,35.26,28.36,11.68
