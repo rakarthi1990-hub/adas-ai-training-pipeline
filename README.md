@@ -80,6 +80,37 @@ Developed to bridge hands-on ML pipeline ownership with production ADAS system a
 | Pedestrian recall | ~0.20 | 0.80 | 0.90 |
 | Bicycle recall | ~0.05 | 0.75 | 0.85 |
 
+## Week 5 — ONNX Inference Benchmarking & Deployment Trade-off
+
+To extend the project beyond model training, the trained YOLOv8 detector was exported to ONNX and benchmarked on CPU across multiple input resolutions using 80 validation images from the nuScenes YOLO dataset. This was done to assess real-time feasibility under ADAS-style compute constraints.
+
+### ONNX FP32 CPU Benchmark Results
+
+| Variant | Input Resolution | Avg Latency (ms) | FPS | Model Size (MB) |
+|---|---:|---:|---:|---:|
+| ONNX FP32 | 320 | 10.11 | 98.93 | 11.56 |
+| ONNX FP32 | 480 | 19.77 | 50.59 | 11.61 |
+| ONNX FP32 | 640 | 35.26 | 28.36 | 11.68 |
+
+### Key Observations
+- Lower input resolutions significantly improved runtime performance.
+- At 320×320, the model achieved ~99 FPS on CPU, providing strong real-time headroom.
+- At 480×480, the model still exceeded 50 FPS and remained comfortably within a 30 FPS target.
+- At 640×640, inference dropped to ~28 FPS, showing the trade-off between detection fidelity and execution speed.
+
+### Quantization Result
+The ONNX model was also quantized to INT8 to evaluate deployment-oriented compression.
+
+| Variant | Avg Latency (ms) | FPS | Model Size (MB) |
+|---|---:|---:|---:|
+| ONNX FP32 (640) | 33.88 | 29.52 | 11.7 |
+| ONNX INT8 (640) | 230.46 | 4.34 | 3.2 |
+
+**Observation:** Dynamic INT8 quantization reduced model size significantly but increased CPU inference latency for this YOLOv8-based detector. This shows that model compression does not automatically improve runtime performance for convolution-heavy perception models.
+
+### Engineering Relevance
+This step extended the project from offline training into deployment-oriented evaluation. It demonstrated how model format, input resolution, and optimization choices affect inference timing, and how those trade-offs can be interpreted against real-time ADAS system constraints.
+
 **Status:** 🔴 **NOT production ready.** This project identifies *why* the model fails and defines the roadmap (targeted augmentation of low-visibility/urban data) to reach safety gates.
 
 ---
