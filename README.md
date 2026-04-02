@@ -1,94 +1,43 @@
-\## ADAS AI Training Pipeline
+# ADAS AI Training Pipeline
+**Karthikeyan Rajan** | Senior ADAS Systems Engineer
 
-\*\***Karthikeyan Rajan**\*\* | **Senior ADAS Systems Engineer**
-
-
-
-An end-to-end AI-based object detection and evaluation pipeline
-
+End-to-end AI-based object detection and safety evaluation pipeline
 for automotive ADAS perception, built on the nuScenes dataset.
 
+Developed to demonstrate hands-on ML pipeline ownership alongside
+production ADAS system architecture experience (LKA/LDW SOP delivery,
+ADAS-CCU dual-SoC/MCU architecture, ISO 26262 / SOTIF).
 
+---
 
-\## **Motivation
-**
-This project extends hands-on AI development experience to complement
-
-production-grade ADAS system architecture and series delivery background
-
-(LKA/LDW SOP). It targets the full AI development lifecycle:
-
-dataset curation → training → scene mining → closed-loop KPI evaluation
-
-→ safety analysis.
-
-
-
-\## **Project structure**
+## Project structure
 
 | Folder | Purpose |
-
 |---|---|
+| `data/` | nuScenes parsing, exploration, YOLO conversion, DataLoader |
+| `src/` | YOLOv8 training loop, evaluation, per-class metrics |
+| `scene_mining/` | Safety-critical scenario extraction by ODD category |
+| `kpi/` | Metrics framework, ODD-level KPI reporting |
+| `safety/` | Failure chain analysis, SOTIF mapping |
+| `outputs/` | Generated plots and reports per week |
 
-| `data/` | Dataset parsing, exploration, DataLoader |
+---
 
-| `src/` | Model definition, training loop, evaluation |
+## Results summary
 
-| `scene\_mining/` | Safety-critical scenario extraction |
+### Week 1 — Dataset exploration
 
-| `kpi/` | Metrics computation and ODD-level reporting |
-
-| `safety/` | Failure mode analysis, SOTIF mapping |
-
-| `notebooks/` | Jupyter walkthroughs per week |
-
-
-
-\## Week 1 — Dataset exploration (current)
-
-\- nuScenes mini dataset parsed and explored
-
-\- Class distribution, visibility analysis, object density visualised
-
-\- Safety-critical observations documented (low visibility, sparse LiDAR)
-
-\- PyTorch DataLoader ready for Week 2 training
-
-
-
-\## Dataset
-
-nuScenes mini — \[nuscenes.org](https://www.nuscenes.org)  
-
-700 training samples | 8 object classes | camera + radar + LiDAR
-
-
-
-\## Setup
-
-```bash
-
-pip install -r requirements.txt
-
-\# Download nuScenes mini to ./data/nuscenes/
-
-cd data \&\& python explore.py
-
-```
-## Week 1 — Key findings
-
-| Metric | Value | ADAS relevance |
+| Finding | Value | ADAS relevance |
 |---|---|---|
-| Peak scene density | 156 objects/frame | Stress-test for perception models |
-| Low-visibility objects (0–40%) | 5480 | Primary safety-critical detection risk |
-| Zero LiDAR point objects | 4278 | Sensor fusion gap — camera-only fallback needed |
-| Dominant classes | car, pedestrian | Aligns with ADAS safety-critical targets |
+| Total annotated samples | 404 | Training corpus size |
+| Peak scene density | 156 objects/frame | Perception stress ceiling |
+| Low-visibility objects (0–40%) | Identified | Primary safety-critical risk |
+| Zero LiDAR point objects | Detected | Sensor fusion gap |
 
-## Week 2 — Training results
+### Week 2 — YOLOv8 training pipeline
 
-Model: YOLOv8n — transfer learning, frozen backbone (layers 0–9)  
-Dataset: nuScenes mini — 323 train / 81 val samples  
-Hardware: CPU only | Training time: 7.3 minutes
+Model: YOLOv8n — transfer learning, frozen backbone (layers 0–9)
+Dataset: nuScenes mini — 323 train / 81 val | Hardware: CPU only
 
 | Metric | Train | Val |
 |---|---|---|
@@ -98,30 +47,15 @@ Hardware: CPU only | Training time: 7.3 minutes
 | Pedestrian AP@50 | — | 0.058 |
 | Bicycle AP@50 | — | 0.003 |
 
-### Key engineering findings
+**Key findings:**
+- Large train/val gap confirms overfitting on 323 samples — production systems require 10k–100k+ frames per ODD
+- Recall 0.21 consistent across splits — model misses ~79% of objects regardless of seen/unseen data
+- Pedestrian AP 0.058, bicycle AP 0.003 — both below any production safety threshold
+- In a real ADAS pipeline: recall 0.21 → missed detection → no braking decision → collision risk (ISO 26262 / SOTIF failure chain)
 
-**Overfitting on small dataset** — large train/val mAP gap (0.21 vs 0.03)
-confirms the model cannot generalise from 323 samples. Production systems
-require 10,000–100,000+ annotated frames per ODD.
+### Week 3 — Safety-critical scene mining
 
-**Recall consistent across splits (0.21)** — the model misses ~79% of
-objects regardless of seen/unseen data. Root cause: frozen backbone
-trained on COCO (generic objects) not adapted to automotive distance
-and scale characteristics.
-
-**Safety-critical class performance** — pedestrian AP@50: 0.058,
-bicycle AP@50: 0.003. Both below any production threshold. In a
-real ADAS pipeline, recall this low maps directly to missed detection
-→ no braking decision → collision risk (ISO 26262 / SOTIF failure chain).
-
-**Implication for Week 3** — low recall is not uniformly distributed.
-Scene mining will identify which specific conditions (occlusion, night,
-dense urban, small object distance) drive the worst misses — enabling
-targeted data collection strategy.
-
-## Week 3 — Scene mining results
-
-Safety-critical scenes identified: 358 / 404 (88.6%)
+Safety-critical scenes identified: **358 / 404 (88.6%)**
 
 | Mining category | Scenes | % of dataset | Safety priority |
 |---|---|---|---|
@@ -129,19 +63,35 @@ Safety-critical scenes identified: 358 / 404 (88.6%)
 | Dense urban (10+ objects) | 326 | 80.7% | High |
 | Pedestrian risk (2+ peds) | 284 | 70.3% | Critical |
 
-**Why 88.6% is expected, not a bug** — nuScenes is a production
-urban dataset (Boston, Singapore city centres). Urban driving ODDs
-are inherently dense and pedestrian-heavy. High safety-critical
-scene proportion confirms the dataset is representative of real
-Level 2+ ADAS operating conditions.
+**Why 88.6% is expected:** nuScenes is a production urban dataset (Boston + Singapore city centres). Urban driving ODDs are inherently dense and pedestrian-heavy. High safety-critical scene proportion confirms the dataset is representative of real Level 2+ ADAS conditions.
 
-**Connection to recall 0.21** — the model's low recall is explained
-by these mining results. 87.4% of scenes contain low-visibility
-objects that cause confidence collapse. 80.7% contain dense
-overlapping detections suppressed by NMS. These are the targeted
-data collection priorities for the next training iteration.
+**Root causes of recall 0.21 — identified by scene mining:**
+1. 87.4% of scenes contain low-visibility objects → confidence collapse
+2. 80.7% contain dense overlapping detections → suppressed by NMS
+3. 70.3% contain 2+ pedestrians → safety-critical class underperformance
 
-\## Stack
+### Week 4 — Safety failure analysis & SOTIF mapping *(in progress)*
 
-Python · PyTorch · nuScenes devkit · Matplotlib · YOLOv8 (Week 2)
+---
 
+## Setup
+```bash
+pip install -r requirements.txt
+# Register and download nuScenes mini (~4GB) from nuscenes.org
+# Extract to ./data/nuscenes/
+
+# Week 1 — explore dataset
+cd data && python explore.py
+
+# Week 2 — convert and train
+python nuscenes_to_yolo.py
+cd ../src && python train.py
+python evaluate.py
+
+# Week 3 — scene mining
+cd ../scene_mining && python mine_scenarios.py
+```
+
+## Stack
+Python · PyTorch · YOLOv8 (Ultralytics) · nuScenes devkit ·
+Matplotlib · pyquaternion | ISO 26262 / SOTIF safety framing
