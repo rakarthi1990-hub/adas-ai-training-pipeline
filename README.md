@@ -99,6 +99,17 @@ Model packaging and inference pipeline validated end-to-end.
 | ONNX | 98 ms/frame | 6.0 MB | 0.029 |
 | TorchScript | 105 ms/frame | 6.3 MB | 0.029 |
 
+### ⚡ Performance & Benchmarking
+
+| Model Variant | Hardware | Input Size | FPS | Latency (ms) | Model Size |
+|---|---|---:|---:|---:|---:|
+| YOLOv8 ONNX (FP32) | CPU (i5-12600H) | 320 | 98.93 | 10.11 | 11.56 MB |
+| YOLOv8 ONNX (FP32) | CPU (i5-12600H) | 480 | 50.59 | 19.77 | 11.61 MB |
+| YOLOv8 ONNX (FP32) | CPU (i5-12600H) | 640 | 28.36 | 35.26 | 11.68 MB |
+| YOLOv8 ONNX (INT8) | CPU (i5-12600H) | 640 | 4.34 | 230.46 | 3.20 MB |
+
+**Observation:** Lower input resolutions significantly improve inference speed, with ~99 FPS at 320 resolution on CPU. Dynamic INT8 quantization reduced model size but increased latency for this convolution-heavy model, highlighting the importance of validating optimization techniques against real runtime performance.
+
 **Pipeline validated:**
 * YOLOv8n exported to ONNX and TorchScript with zero accuracy loss post-export
 * ONNX Runtime inference integrated with KPI evaluation loop — closing the train → deploy → evaluate cycle
