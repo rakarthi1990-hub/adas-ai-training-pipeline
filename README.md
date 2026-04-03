@@ -9,6 +9,9 @@ This project implements an end-to-end ADAS perception pipeline — from raw sens
 * Where latency and bottlenecks occur
 * What it takes to meet real-time constraints in ADAS systems
 
+## 📊 ADAS Pipeline Architecture
+
+👉 [Live architecture view](https://rakarthi1990-hub.github.io/adas-ai-training-pipeline/)
 ---
 
 ## Project Structure
