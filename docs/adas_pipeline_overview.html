@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ADAS AI Pipeline — End-to-End Architecture</title>
+<style>
+  :root {
+    --color-text-primary: #1a1a18;
+    --color-text-secondary: #5f5e5a;
+    --color-border-tertiary: rgba(0,0,0,0.15);
+    --color-border-secondary: rgba(0,0,0,0.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-text-primary: #e8e6de;
+      --color-text-secondary: #9c9a92;
+      --color-border-tertiary: rgba(255,255,255,0.15);
+      --color-border-secondary: rgba(255,255,255,0.3);
+    }
+    body { background: #1c1c1a; }
+  }
+  body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; }
+  h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 4px; }
+  p  { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 20px; }
+  svg .t  { font-family: system-ui, sans-serif; font-size: 14px; font-weight: 400; fill: var(--color-text-primary); }
+  svg .ts { font-family: system-ui, sans-serif; font-size: 12px; font-weight: 400; fill: var(--color-text-secondary); }
+  svg .th { font-family: system-ui, sans-serif; font-size: 14px; font-weight: 500; fill: var(--color-text-primary); }
+  /* color ramps */
+  svg .c-blue   > rect, svg .c-blue   > circle { fill: #E6F1FB; stroke: #185FA5; }
+  svg .c-blue   > text.th { fill: #0C447C; } svg .c-blue   > text.ts { fill: #185FA5; }
+  svg .c-purple > rect, svg .c-purple > circle { fill: #EEEDFE; stroke: #534AB7; }
+  svg .c-purple > text.th { fill: #3C3489; } svg .c-purple > text.ts { fill: #534AB7; }
+  svg .c-amber  > rect, svg .c-amber  > circle { fill: #FAEEDA; stroke: #854F0B; }
+  svg .c-amber  > text.th { fill: #633806; } svg .c-amber  > text.ts { fill: #854F0B; }
+  svg .c-coral  > rect, svg .c-coral  > circle { fill: #FAECE7; stroke: #993C1D; }
+  svg .c-coral  > text.th { fill: #712B13; } svg .c-coral  > text.ts { fill: #993C1D; }
+  svg .c-teal   > rect, svg .c-teal   > circle { fill: #E1F5EE; stroke: #0F6E56; }
+  svg .c-teal   > text.th { fill: #085041; } svg .c-teal   > text.ts { fill: #0F6E56; }
+  svg .c-gray   > rect, svg .c-gray   > circle { fill: #F1EFE8; stroke: #5F5E5A; }
+  svg .c-gray   > text.th { fill: #444441; } svg .c-gray   > text.ts { fill: #5F5E5A; }
+  @media (prefers-color-scheme: dark) {
+    svg .c-blue   > rect { fill: #0C447C; stroke: #85B7EB; }
+    svg .c-blue   > text.th { fill: #B5D4F4; } svg .c-blue   > text.ts { fill: #85B7EB; }
+    svg .c-purple > rect { fill: #3C3489; stroke: #AFA9EC; }
+    svg .c-purple > text.th { fill: #CECBF6; } svg .c-purple > text.ts { fill: #AFA9EC; }
+    svg .c-amber  > rect { fill: #633806; stroke: #EF9F27; }
+    svg .c-amber  > text.th { fill: #FAC775; } svg .c-amber  > text.ts { fill: #EF9F27; }
+    svg .c-coral  > rect { fill: #712B13; stroke: #F0997B; }
+    svg .c-coral  > text.th { fill: #F5C4B3; } svg .c-coral  > text.ts { fill: #F0997B; }
+    svg .c-teal   > rect { fill: #085041; stroke: #5DCAA5; }
+    svg .c-teal   > text.th { fill: #9FE1CB; } svg .c-teal   > text.ts { fill: #5DCAA5; }
+    svg .c-gray   > rect { fill: #444441; stroke: #B4B2A9; }
+    svg .c-gray   > text.th { fill: #D3D1C7; } svg .c-gray   > text.ts { fill: #B4B2A9; }
+    svg .th { fill: #e8e6de; } svg .ts { fill: #9c9a92; }
+  }
+  svg .arr { stroke: var(--color-border-secondary); stroke-width: 1.5; fill: none; }
+</style>
+</head>
+<body>
+<h1>ADAS AI Training Pipeline — End-to-End Architecture</h1>
+<p>Karthikeyan Rajan · Senior ADAS Systems Engineer · nuScenes → YOLOv8 → SOTIF → Deployment</p>
+
+<svg width="100%" viewBox="0 0 680 1780" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<!-- LEGEND -->
+<rect x="30" y="18" width="620" height="38" rx="8" fill="none" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+<rect x="46" y="30" width="14" height="14" rx="3" style="fill:#E6F1FB;stroke:#185FA5"/>
+<text class="ts" x="66" y="41">Data layer</text>
+<rect x="146" y="30" width="14" height="14" rx="3" style="fill:#EEEDFE;stroke:#534AB7"/>
+<text class="ts" x="166" y="41">Model / training</text>
+<rect x="286" y="30" width="14" height="14" rx="3" style="fill:#FAEEDA;stroke:#854F0B"/>
+<text class="ts" x="306" y="41">Scene mining</text>
+<rect x="406" y="30" width="14" height="14" rx="3" style="fill:#FAECE7;stroke:#993C1D"/>
+<text class="ts" x="426" y="41">Safety / SOTIF</text>
+<rect x="536" y="30" width="14" height="14" rx="3" style="fill:#E1F5EE;stroke:#0F6E56"/>
+<text class="ts" x="556" y="41">Deployment</text>
+
+<!-- WEEK 1 -->
+<rect x="30" y="72" width="620" height="26" rx="6" class="c-blue" stroke-width="0.5"/>
+<text class="th" x="340" y="89" text-anchor="middle">Week 1 — dataset exploration</text>
+
+<g class="c-blue">
+<rect x="200" y="112" width="280" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="132" text-anchor="middle">nuScenes mini dataset</text>
+<text class="ts" x="340" y="150" text-anchor="middle">700 samples · 8 classes · camera + LiDAR + radar</text>
+</g>
+<g class="c-blue">
+<rect x="50" y="188" width="230" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="165" y="208" text-anchor="middle">nuScenes devkit parsing</text>
+<text class="ts" x="165" y="226" text-anchor="middle">Metadata, sweeps, annotations</text>
+</g>
+<g class="c-blue">
+<rect x="400" y="188" width="230" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="515" y="208" text-anchor="middle">Exploratory analysis</text>
+<text class="ts" x="515" y="226" text-anchor="middle">Class dist · visibility · density</text>
+</g>
+<g class="c-blue">
+<rect x="50" y="264" width="140" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="120" y="284" text-anchor="middle">404 samples</text>
+<text class="ts" x="120" y="302" text-anchor="middle">Training corpus</text>
+</g>
+<g class="c-blue">
+<rect x="210" y="264" width="140" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="280" y="284" text-anchor="middle">Low visibility</text>
+<text class="ts" x="280" y="302" text-anchor="middle">0–40% objects ⚠</text>
+</g>
+<g class="c-blue">
+<rect x="370" y="264" width="140" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="440" y="284" text-anchor="middle">Zero LiDAR pts</text>
+<text class="ts" x="440" y="302" text-anchor="middle">Sensor fusion gap ⚠</text>
+</g>
+<g class="c-blue">
+<rect x="530" y="264" width="140" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="600" y="284" text-anchor="middle">156 obj/frame</text>
+<text class="ts" x="600" y="302" text-anchor="middle">Stress ceiling</text>
+</g>
+
+<line x1="340" y1="164" x2="165" y2="188" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="164" x2="515" y2="188" class="arr" marker-end="url(#arrow)"/>
+<line x1="165" y1="240" x2="120" y2="264" class="arr" marker-end="url(#arrow)"/>
+<line x1="165" y1="240" x2="280" y2="264" class="arr" marker-end="url(#arrow)"/>
+<line x1="515" y1="240" x2="440" y2="264" class="arr" marker-end="url(#arrow)"/>
+<line x1="515" y1="240" x2="600" y2="264" class="arr" marker-end="url(#arrow)"/>
+<line x1="280" y1="316" x2="280" y2="336" stroke="#BA7517" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="282" y="346" style="fill:#BA7517">→ scene mining (W3)</text>
+<line x1="440" y1="316" x2="440" y2="336" stroke="#993C1D" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="442" y="346" style="fill:#993C1D">→ SOTIF trigger (W4)</text>
+
+<!-- WEEK 2 -->
+<rect x="30" y="362" width="620" height="26" rx="6" class="c-purple" stroke-width="0.5"/>
+<text class="th" x="340" y="379" text-anchor="middle">Week 2 — YOLOv8 training pipeline</text>
+
+<g class="c-blue">
+<rect x="50" y="402" width="200" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="150" y="422" text-anchor="middle">YOLO format conversion</text>
+<text class="ts" x="150" y="440" text-anchor="middle">nuscenes_to_yolo.py</text>
+</g>
+<g class="c-blue">
+<rect x="280" y="402" width="160" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="360" y="422" text-anchor="middle">PyTorch DataLoader</text>
+<text class="ts" x="360" y="440" text-anchor="middle">323 train / 81 val</text>
+</g>
+<g class="c-purple">
+<rect x="470" y="402" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="560" y="422" text-anchor="middle">YOLOv8n config</text>
+<text class="ts" x="560" y="440" text-anchor="middle">Frozen backbone 0–9</text>
+</g>
+<g class="c-purple">
+<rect x="190" y="478" width="300" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="498" text-anchor="middle">Training loop (train.py)</text>
+<text class="ts" x="340" y="516" text-anchor="middle">Transfer learning · CPU baseline</text>
+</g>
+<g class="c-purple">
+<rect x="50" y="554" width="145" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="122" y="574" text-anchor="middle">mAP@50</text>
+<text class="ts" x="122" y="592" text-anchor="middle">Train 0.21 · Val 0.03</text>
+</g>
+<g class="c-purple">
+<rect x="215" y="554" width="145" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="287" y="574" text-anchor="middle">Precision / Recall</text>
+<text class="ts" x="287" y="592" text-anchor="middle">0.56 / 0.21 (train)</text>
+</g>
+<g class="c-purple">
+<rect x="380" y="554" width="145" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="452" y="574" text-anchor="middle">Pedestrian AP</text>
+<text class="ts" x="452" y="592" text-anchor="middle">0.058 val ⚠</text>
+</g>
+<g class="c-purple">
+<rect x="545" y="554" width="105" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="597" y="574" text-anchor="middle">Bicycle AP</text>
+<text class="ts" x="597" y="592" text-anchor="middle">0.003 val ⚠</text>
+</g>
+
+<line x1="250" y1="428" x2="280" y2="428" class="arr" marker-end="url(#arrow)"/>
+<line x1="440" y1="428" x2="470" y2="428" class="arr" marker-end="url(#arrow)"/>
+<line x1="150" y1="454" x2="280" y2="478" class="arr" marker-end="url(#arrow)"/>
+<line x1="360" y1="454" x2="340" y2="478" class="arr" marker-end="url(#arrow)"/>
+<line x1="560" y1="454" x2="400" y2="478" class="arr" marker-end="url(#arrow)"/>
+<line x1="280" y1="530" x2="122" y2="554" class="arr" marker-end="url(#arrow)"/>
+<line x1="320" y1="530" x2="287" y2="554" class="arr" marker-end="url(#arrow)"/>
+<line x1="360" y1="530" x2="452" y2="554" class="arr" marker-end="url(#arrow)"/>
+<line x1="400" y1="530" x2="597" y2="554" class="arr" marker-end="url(#arrow)"/>
+<line x1="452" y1="606" x2="452" y2="626" stroke="#993C1D" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="314" y="636" style="fill:#993C1D">Recall 0.21 → missed detection → no brake → collision risk (ISO 26262)</text>
+
+<!-- WEEK 3 -->
+<rect x="30" y="652" width="620" height="26" rx="6" class="c-amber" stroke-width="0.5"/>
+<text class="th" x="340" y="669" text-anchor="middle">Week 3 — safety-critical scene mining</text>
+
+<g class="c-amber">
+<rect x="190" y="692" width="300" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="712" text-anchor="middle">mine_scenarios.py</text>
+<text class="ts" x="340" y="730" text-anchor="middle">ODD-level extraction from 404 scenes</text>
+</g>
+<g class="c-amber">
+<rect x="50" y="768" width="170" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="135" y="790" text-anchor="middle">Low visibility</text>
+<text class="ts" x="135" y="808" text-anchor="middle">353 / 404 (87.4%)</text>
+<text class="ts" x="135" y="824" text-anchor="middle">Priority: Critical</text>
+</g>
+<g class="c-amber">
+<rect x="255" y="768" width="170" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="790" text-anchor="middle">Dense urban</text>
+<text class="ts" x="340" y="808" text-anchor="middle">326 / 404 (80.7%)</text>
+<text class="ts" x="340" y="824" text-anchor="middle">Priority: High</text>
+</g>
+<g class="c-amber">
+<rect x="460" y="768" width="170" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="545" y="790" text-anchor="middle">Pedestrian risk</text>
+<text class="ts" x="545" y="808" text-anchor="middle">284 / 404 (70.3%)</text>
+<text class="ts" x="545" y="824" text-anchor="middle">Priority: Critical</text>
+</g>
+<g class="c-amber">
+<rect x="190" y="858" width="300" height="40" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="883" text-anchor="middle">358 / 404 scenes safety-critical (88.6%)</text>
+</g>
+
+<line x1="340" y1="744" x2="135" y2="768" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="744" x2="340" y2="768" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="744" x2="545" y2="768" class="arr" marker-end="url(#arrow)"/>
+<line x1="135" y1="834" x2="280" y2="858" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="834" x2="340" y2="858" class="arr" marker-end="url(#arrow)"/>
+<line x1="545" y1="834" x2="400" y2="858" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="898" x2="340" y2="918" stroke="#993C1D" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="180" y="928" style="fill:#993C1D">Root cause input → SOTIF failure chain (W4)</text>
+
+<!-- WEEK 4 -->
+<rect x="30" y="944" width="620" height="26" rx="6" class="c-coral" stroke-width="0.5"/>
+<text class="th" x="340" y="961" text-anchor="middle">Week 4 — SOTIF failure analysis &amp; ASIL mapping</text>
+
+<g class="c-coral">
+<rect x="190" y="984" width="300" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1004" text-anchor="middle">sotif_mapping.py</text>
+<text class="ts" x="340" y="1022" text-anchor="middle">ISO 21448 · ISO 26262 Part 6</text>
+</g>
+<g class="c-coral">
+<rect x="30" y="1060" width="148" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="104" y="1080" text-anchor="middle">Missed ped.</text>
+<text class="ts" x="104" y="1098" text-anchor="middle">Visibility &lt; 40%</text>
+<text class="ts" x="104" y="1116" text-anchor="middle">ASIL C</text>
+</g>
+<g class="c-coral">
+<rect x="192" y="1060" width="148" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="266" y="1080" text-anchor="middle">Dense NMS fail</text>
+<text class="ts" x="266" y="1098" text-anchor="middle">10+ obj/frame</text>
+<text class="ts" x="266" y="1116" text-anchor="middle">ASIL B</text>
+</g>
+<g class="c-coral">
+<rect x="354" y="1060" width="148" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="428" y="1080" text-anchor="middle">Bicycle miss</text>
+<text class="ts" x="428" y="1098" text-anchor="middle">AP 0.003</text>
+<text class="ts" x="428" y="1116" text-anchor="middle">ASIL B</text>
+</g>
+<g class="c-coral">
+<rect x="516" y="1060" width="148" height="68" rx="8" stroke-width="0.5"/>
+<text class="th" x="590" y="1080" text-anchor="middle">Zero LiDAR</text>
+<text class="ts" x="590" y="1098" text-anchor="middle">Camera-only gap</text>
+<text class="ts" x="590" y="1116" text-anchor="middle">ASIL C</text>
+</g>
+<g class="c-coral">
+<rect x="100" y="1152" width="440" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="320" y="1172" text-anchor="middle">Production KPI gate</text>
+<text class="ts" x="320" y="1190" text-anchor="middle">Pedestrian recall ≥ 0.85 · mAP@50 ≥ 0.45 before SOP</text>
+</g>
+
+<line x1="340" y1="1036" x2="104" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1036" x2="266" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1036" x2="428" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1036" x2="590" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<line x1="104" y1="1128" x2="200" y2="1152" class="arr" marker-end="url(#arrow)"/>
+<line x1="266" y1="1128" x2="270" y2="1152" class="arr" marker-end="url(#arrow)"/>
+<line x1="428" y1="1128" x2="380" y2="1152" class="arr" marker-end="url(#arrow)"/>
+<line x1="590" y1="1128" x2="480" y2="1152" class="arr" marker-end="url(#arrow)"/>
+<line x1="320" y1="1204" x2="320" y2="1224" stroke="#0F6E56" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="160" y="1234" style="fill:#0F6E56">KPI thresholds feed deployment validation loop (W5)</text>
+
+<!-- WEEK 5 -->
+<rect x="30" y="1250" width="620" height="26" rx="6" class="c-teal" stroke-width="0.5"/>
+<text class="th" x="340" y="1267" text-anchor="middle">Week 5 — model export, deployment &amp; inference benchmarking</text>
+
+<g class="c-teal">
+<rect x="50" y="1290" width="160" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="130" y="1310" text-anchor="middle">PyTorch (.pt)</text>
+<text class="ts" x="130" y="1328" text-anchor="middle">142 ms/frame</text>
+<text class="ts" x="130" y="1344" text-anchor="middle">6.2 MB · baseline</text>
+</g>
+<g class="c-teal">
+<rect x="260" y="1290" width="160" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1310" text-anchor="middle">ONNX export</text>
+<text class="ts" x="340" y="1328" text-anchor="middle">98 ms/frame</text>
+<text class="ts" x="340" y="1344" text-anchor="middle">6.0 MB · runtime</text>
+</g>
+<g class="c-teal">
+<rect x="470" y="1290" width="160" height="66" rx="8" stroke-width="0.5"/>
+<text class="th" x="550" y="1310" text-anchor="middle">TorchScript</text>
+<text class="ts" x="550" y="1328" text-anchor="middle">105 ms/frame</text>
+<text class="ts" x="550" y="1344" text-anchor="middle">6.3 MB · portable</text>
+</g>
+<g class="c-teal">
+<rect x="130" y="1380" width="240" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="250" y="1400" text-anchor="middle">ONNX Runtime inference</text>
+<text class="ts" x="250" y="1418" text-anchor="middle">Per-class latency profiling</text>
+</g>
+<g class="c-teal">
+<rect x="400" y="1380" width="200" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="500" y="1400" text-anchor="middle">KPI validation loop</text>
+<text class="ts" x="500" y="1418" text-anchor="middle">Closed-loop evaluation</text>
+</g>
+<g class="c-teal">
+<rect x="80" y="1456" width="520" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1476" text-anchor="middle">Production gap analysis</text>
+<text class="ts" x="340" y="1494" text-anchor="middle">98 ms CPU vs 33 ms target · mAP 0.03 vs 0.45 gate · GPU/TensorRT path defined</text>
+</g>
+
+<line x1="130" y1="1323" x2="260" y2="1380" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1356" x2="250" y2="1380" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1356" x2="500" y2="1380" class="arr" marker-end="url(#arrow)"/>
+<line x1="550" y1="1356" x2="500" y2="1380" class="arr" marker-end="url(#arrow)"/>
+<line x1="250" y1="1432" x2="240" y2="1456" class="arr" marker-end="url(#arrow)"/>
+<line x1="500" y1="1432" x2="440" y2="1456" class="arr" marker-end="url(#arrow)"/>
+
+<!-- WEEK TRANSITIONS -->
+<line x1="340" y1="352" x2="340" y2="362" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="642" x2="340" y2="652" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="934" x2="340" y2="944" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1240" x2="340" y2="1250" class="arr" marker-end="url(#arrow)"/>
+
+<!-- UPGRADE PATH -->
+<rect x="30" y="1532" width="620" height="26" rx="6" fill="none" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+<text class="th" x="340" y="1549" text-anchor="middle">Upgrade &amp; feedback path</text>
+
+<g class="c-gray">
+<rect x="50" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="140" y="1592" text-anchor="middle">Full dataset retraining</text>
+<text class="ts" x="140" y="1610" text-anchor="middle">10k–100k+ frames / ODD</text>
+</g>
+<g class="c-gray">
+<rect x="250" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1592" text-anchor="middle">YOLOv8s/m upgrade</text>
+<text class="ts" x="340" y="1610" text-anchor="middle">Unfreeze backbone</text>
+</g>
+<g class="c-gray">
+<rect x="450" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="540" y="1592" text-anchor="middle">GPU / TensorRT</text>
+<text class="ts" x="540" y="1610" text-anchor="middle">30 FPS production target</text>
+</g>
+<g class="c-gray">
+<rect x="170" y="1648" width="340" height="44" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1668" text-anchor="middle">Production-gate re-evaluation</text>
+<text class="ts" x="340" y="1684" text-anchor="middle">Close KPI gap → SOP readiness</text>
+</g>
+
+<line x1="140" y1="1624" x2="230" y2="1648" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1624" x2="340" y2="1648" class="arr" marker-end="url(#arrow)"/>
+<line x1="540" y1="1624" x2="450" y2="1648" class="arr" marker-end="url(#arrow)"/>
+
+<!-- RETRAIN FEEDBACK LOOP -->
+<path d="M 30 1670 L 18 1670 L 18 478 L 50 478" fill="none" stroke="#BA7517" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text class="ts" x="20" y="1076" style="fill:#BA7517" transform="rotate(-90,20,1076)">retrain loop</text>
+
+<!-- TRACEABILITY SPINE -->
+<line x1="662" y1="98" x2="662" y2="1692" stroke="var(--color-border-tertiary)" stroke-width="0.5" stroke-dasharray="4 3" fill="none"/>
+<circle cx="662" cy="98"  r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="388" r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="678" r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="970" r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="1276" r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="1558" r="3" fill="var(--color-text-secondary)"/>
+<text class="ts" x="655" y="100"  text-anchor="end">W1</text>
+<text class="ts" x="655" y="390"  text-anchor="end">W2</text>
+<text class="ts" x="655" y="680"  text-anchor="end">W3</text>
+<text class="ts" x="655" y="972"  text-anchor="end">W4</text>
+<text class="ts" x="655" y="1278" text-anchor="end">W5</text>
+<text class="ts" x="655" y="1560" text-anchor="end">SOP</text>
+</svg>
+</body>
+</html>
