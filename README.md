@@ -2,7 +2,13 @@
 
 **Karthikeyan Rajan** | Senior ADAS Systems Engineer
 
-End-to-end AI-based object detection and safety evaluation pipeline for automotive ADAS perception, built on the nuScenes dataset. Developed to demonstrate hands-on ML pipeline ownership alongside production ADAS system architecture experience (LKA/LDW SOP delivery, ADAS-CCU dual-SoC/MCU architecture, ISO 26262 / SOTIF).
+This project implements an end-to-end ADAS perception pipeline — from raw sensor data to real-time object detection — with a focus on system-level performance, data flow, and deployment constraint, built on the nuScenes dataset. Developed to demonstrate hands-on ML pipeline ownership alongside production ADAS system architecture experience (LKA/LDW SOP delivery, ADAS-CCU dual-SoC/MCU architecture, ISO 26262 / SOTIF).
+
+Instead of treating object detection as a standalone ML task, this work explores:
+
+How data moves across the pipeline
+Where latency and bottlenecks occur
+What it takes to meet real-time constraints in ADAS systems
 
 ---
 
