@@ -1,0 +1,60 @@
+{
+  "item_name": "ADAS AI Perception Pipeline",
+  "item_purpose": "AI-based perception pipeline for object detection, safety analysis, deployment benchmarking, and cybersecurity evaluation in an ADAS context.",
+  "scope": {
+    "included_components": [
+      "Dataset ingestion and preprocessing",
+      "YOLOv8 model training pipeline",
+      "Model export artifacts (.pt, .onnx)",
+      "ONNX inference runtime",
+      "Deployment benchmarking scripts",
+      "Safety and cybersecurity analysis artifacts"
+    ],
+    "excluded_components": [
+      "Vehicle actuator control",
+      "Live vehicle CAN communication",
+      "Production ECU hardware",
+      "Cloud backend services"
+    ]
+  },
+  "operational_context": {
+    "domain": "ADAS perception",
+    "environment": "Offline development and deployment-oriented benchmarking environment",
+    "primary_use_case": "Object detection under urban driving scenarios using nuScenes-based training and evaluation"
+  },
+  "cybersecurity_relevance": {
+    "rationale": [
+      "Perception inputs can be manipulated or spoofed",
+      "Model artifacts can be tampered with before deployment",
+      "Inference runtime can be disrupted, affecting availability",
+      "Training data integrity directly affects system behavior"
+    ]
+  },
+  "assets": [
+    {
+      "asset_id": "A1",
+      "name": "Sensor input frames",
+      "type": "input_data"
+    },
+    {
+      "asset_id": "A2",
+      "name": "Dataset and annotation pipeline",
+      "type": "training_data"
+    },
+    {
+      "asset_id": "A3",
+      "name": "Trained model weights (.pt, .onnx)",
+      "type": "model_artifact"
+    },
+    {
+      "asset_id": "A4",
+      "name": "ONNX inference runtime",
+      "type": "runtime"
+    },
+    {
+      "asset_id": "A5",
+      "name": "Deployment and benchmarking outputs",
+      "type": "evaluation_artifact"
+    }
+  ]
+}
