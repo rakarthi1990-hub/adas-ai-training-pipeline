@@ -145,7 +145,7 @@ Safety-Critical Scene Mining by ODD (Week 3)
 SOTIF Failure Analysis & ASIL Classification (Week 4)
 │
 ▼
-ONNX/TorchScript Export → Inference Benchmarking → KPI Validation (Week 5)
+ONNX/TorchScript Export → Inference Benchmarking → KPI Validation (Week 5) ##
 ---
 
 ** 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)**
