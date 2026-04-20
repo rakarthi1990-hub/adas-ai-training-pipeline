@@ -125,11 +125,44 @@ Model packaging and inference pipeline validated end-to-end.
 * mAP@50 val 0.029 below production gate (0.45) — confirms need for full dataset (10k+ frames) retraining
 * Architecture upgrade path identified: YOLOv8s/m with unfrozen backbone on full nuScenes 700-scene split
 
+** 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)**
+
+ **Week 6 — Asset Identification**
+Assets defined:
+- Sensor inputs  
+- Dataset pipeline  
+- Model artifacts  
+- Inference runtime  
+- Deployment outputs  
+
+CIA triad applied → **Integrity most critical**
+
+**Week 7 — TARA**
+
+| Threat | Description | Impact |
+|---|---|---|
+| Adversarial input | Manipulated image | Safety-critical |
+| Model tampering | Modified ONNX | Silent failure |
+| Data poisoning | Corrupt training data | Bias |
+| Inference denial | Runtime overload | Timing violation |
+
+**Week 8 — Controls**
+
+- Model integrity check (SHA256)
+- Adversarial testing (input perturbation)
+
+**Week 9 — Documentation**
+
+- TARA report  
+- Cybersecurity goals  
+- Traceability matrix  
+
+---
 ---
 
 ## Full Pipeline Overview
 
-```text
+
 nuScenes mini
 │
 ▼
@@ -148,46 +181,6 @@ SOTIF Failure Analysis & ASIL Classification (Week 4)
 ONNX/TorchScript Export → Inference Benchmarking → KPI Validation (Week 5) ##
 ---
 
-** 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)**
-
- **Week 6 — Asset Identification**
-
-Assets defined:
-- Sensor inputs  
-- Dataset pipeline  
-- Model artifacts  
-- Inference runtime  
-- Deployment outputs  
-
-CIA triad applied → **Integrity most critical**
-
----
-
-**Week 7 — TARA**
-
-| Threat | Description | Impact |
-|---|---|---|
-| Adversarial input | Manipulated image | Safety-critical |
-| Model tampering | Modified ONNX | Silent failure |
-| Data poisoning | Corrupt training data | Bias |
-| Inference denial | Runtime overload | Timing violation |
-
----
-
-**Week 8 — Controls**
-
-- Model integrity check (SHA256)
-- Adversarial testing (input perturbation)
-
----
-
-**Week 9 — Documentation**
-
-- TARA report  
-- Cybersecurity goals  
-- Traceability matrix  
-
----
 
 **🔑 Key Insight**
 
