@@ -146,13 +146,11 @@ SOTIF Failure Analysis & ASIL Classification (Week 4)
 │
 ▼
 ONNX/TorchScript Export → Inference Benchmarking → KPI Validation (Week 5)
-
-
 ---
 
-## 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)
+** 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)**
 
-### Week 6 — Asset Identification
+ **Week 6 — Asset Identification**
 
 Assets defined:
 - Sensor inputs  
@@ -165,7 +163,7 @@ CIA triad applied → **Integrity most critical**
 
 ---
 
-### Week 7 — TARA
+**Week 7 — TARA**
 
 | Threat | Description | Impact |
 |---|---|---|
@@ -176,14 +174,14 @@ CIA triad applied → **Integrity most critical**
 
 ---
 
-### Week 8 — Controls
+**Week 8 — Controls**
 
 - Model integrity check (SHA256)
 - Adversarial testing (input perturbation)
 
 ---
 
-### Week 9 — Documentation
+**Week 9 — Documentation**
 
 - TARA report  
 - Cybersecurity goals  
@@ -191,7 +189,7 @@ CIA triad applied → **Integrity most critical**
 
 ---
 
-### 🔑 Key Insight
+**🔑 Key Insight**
 
 Perception systems must satisfy:
 
