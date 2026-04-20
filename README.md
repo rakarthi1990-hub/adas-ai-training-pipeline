@@ -146,3 +146,57 @@ SOTIF Failure Analysis & ASIL Classification (Week 4)
 │
 ▼
 ONNX/TorchScript Export → Inference Benchmarking → KPI Validation (Week 5)
+
+
+---
+
+## 🔐 Week 6–9 — Cybersecurity Extension (ISO/SAE 21434)
+
+### Week 6 — Asset Identification
+
+Assets defined:
+- Sensor inputs  
+- Dataset pipeline  
+- Model artifacts  
+- Inference runtime  
+- Deployment outputs  
+
+CIA triad applied → **Integrity most critical**
+
+---
+
+### Week 7 — TARA
+
+| Threat | Description | Impact |
+|---|---|---|
+| Adversarial input | Manipulated image | Safety-critical |
+| Model tampering | Modified ONNX | Silent failure |
+| Data poisoning | Corrupt training data | Bias |
+| Inference denial | Runtime overload | Timing violation |
+
+---
+
+### Week 8 — Controls
+
+- Model integrity check (SHA256)
+- Adversarial testing (input perturbation)
+
+---
+
+### Week 9 — Documentation
+
+- TARA report  
+- Cybersecurity goals  
+- Traceability matrix  
+
+---
+
+### 🔑 Key Insight
+
+Perception systems must satisfy:
+
+- **Safety (accuracy)**
+- **Performance (latency)**
+- **Security (integrity)**
+
+All three are mandatory for production ADAS.
