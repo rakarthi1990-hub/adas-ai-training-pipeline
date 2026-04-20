@@ -26,7 +26,6 @@
   svg .t  { font-family: system-ui, sans-serif; font-size: 14px; font-weight: 400; fill: var(--color-text-primary); }
   svg .ts { font-family: system-ui, sans-serif; font-size: 12px; font-weight: 400; fill: var(--color-text-secondary); }
   svg .th { font-family: system-ui, sans-serif; font-size: 14px; font-weight: 500; fill: var(--color-text-primary); }
-  /* color ramps */
   svg .c-blue   > rect, svg .c-blue   > circle { fill: #E6F1FB; stroke: #185FA5; }
   svg .c-blue   > text.th { fill: #0C447C; } svg .c-blue   > text.ts { fill: #185FA5; }
   svg .c-purple > rect, svg .c-purple > circle { fill: #EEEDFE; stroke: #534AB7; }
@@ -37,8 +36,11 @@
   svg .c-coral  > text.th { fill: #712B13; } svg .c-coral  > text.ts { fill: #993C1D; }
   svg .c-teal   > rect, svg .c-teal   > circle { fill: #E1F5EE; stroke: #0F6E56; }
   svg .c-teal   > text.th { fill: #085041; } svg .c-teal   > text.ts { fill: #0F6E56; }
+  svg .c-cyber  > rect, svg .c-cyber  > circle { fill: #EAF0FF; stroke: #3454D1; }
+  svg .c-cyber  > text.th { fill: #233A98; } svg .c-cyber  > text.ts { fill: #3454D1; }
   svg .c-gray   > rect, svg .c-gray   > circle { fill: #F1EFE8; stroke: #5F5E5A; }
   svg .c-gray   > text.th { fill: #444441; } svg .c-gray   > text.ts { fill: #5F5E5A; }
+
   @media (prefers-color-scheme: dark) {
     svg .c-blue   > rect { fill: #0C447C; stroke: #85B7EB; }
     svg .c-blue   > text.th { fill: #B5D4F4; } svg .c-blue   > text.ts { fill: #85B7EB; }
@@ -50,6 +52,8 @@
     svg .c-coral  > text.th { fill: #F5C4B3; } svg .c-coral  > text.ts { fill: #F0997B; }
     svg .c-teal   > rect { fill: #085041; stroke: #5DCAA5; }
     svg .c-teal   > text.th { fill: #9FE1CB; } svg .c-teal   > text.ts { fill: #5DCAA5; }
+    svg .c-cyber  > rect { fill: #233A98; stroke: #A9B8FF; }
+    svg .c-cyber  > text.th { fill: #D6DEFF; } svg .c-cyber  > text.ts { fill: #A9B8FF; }
     svg .c-gray   > rect { fill: #444441; stroke: #B4B2A9; }
     svg .c-gray   > text.th { fill: #D3D1C7; } svg .c-gray   > text.ts { fill: #B4B2A9; }
     svg .th { fill: #e8e6de; } svg .ts { fill: #9c9a92; }
@@ -59,9 +63,9 @@
 </head>
 <body>
 <h1>ADAS AI Training Pipeline — End-to-End Architecture</h1>
-<p>Karthikeyan Rajan · Senior ADAS Systems Engineer · nuScenes → YOLOv8 → SOTIF → Deployment</p>
+<p>Karthikeyan Rajan · Senior ADAS Systems Engineer · nuScenes → YOLOv8 → SOTIF → Deployment → Cybersecurity</p>
 
-<svg width="100%" viewBox="0 0 680 1780" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 2085" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
 <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -70,16 +74,18 @@
 
 <!-- LEGEND -->
 <rect x="30" y="18" width="620" height="38" rx="8" fill="none" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
-<rect x="46" y="30" width="14" height="14" rx="3" style="fill:#E6F1FB;stroke:#185FA5"/>
-<text class="ts" x="66" y="41">Data layer</text>
-<rect x="146" y="30" width="14" height="14" rx="3" style="fill:#EEEDFE;stroke:#534AB7"/>
-<text class="ts" x="166" y="41">Model / training</text>
-<rect x="286" y="30" width="14" height="14" rx="3" style="fill:#FAEEDA;stroke:#854F0B"/>
-<text class="ts" x="306" y="41">Scene mining</text>
-<rect x="406" y="30" width="14" height="14" rx="3" style="fill:#FAECE7;stroke:#993C1D"/>
-<text class="ts" x="426" y="41">Safety / SOTIF</text>
-<rect x="536" y="30" width="14" height="14" rx="3" style="fill:#E1F5EE;stroke:#0F6E56"/>
-<text class="ts" x="556" y="41">Deployment</text>
+<rect x="42" y="30" width="14" height="14" rx="3" style="fill:#E6F1FB;stroke:#185FA5"/>
+<text class="ts" x="62" y="41">Data</text>
+<rect x="132" y="30" width="14" height="14" rx="3" style="fill:#EEEDFE;stroke:#534AB7"/>
+<text class="ts" x="152" y="41">Model</text>
+<rect x="222" y="30" width="14" height="14" rx="3" style="fill:#FAEEDA;stroke:#854F0B"/>
+<text class="ts" x="242" y="41">Mining</text>
+<rect x="312" y="30" width="14" height="14" rx="3" style="fill:#FAECE7;stroke:#993C1D"/>
+<text class="ts" x="332" y="41">Safety</text>
+<rect x="402" y="30" width="14" height="14" rx="3" style="fill:#E1F5EE;stroke:#0F6E56"/>
+<text class="ts" x="422" y="41">Deploy</text>
+<rect x="492" y="30" width="14" height="14" rx="3" style="fill:#EAF0FF;stroke:#3454D1"/>
+<text class="ts" x="512" y="41">Cybersecurity</text>
 
 <!-- WEEK 1 -->
 <rect x="30" y="72" width="620" height="26" rx="6" class="c-blue" stroke-width="0.5"/>
@@ -325,6 +331,59 @@
 <line x1="250" y1="1432" x2="240" y2="1456" class="arr" marker-end="url(#arrow)"/>
 <line x1="500" y1="1432" x2="440" y2="1456" class="arr" marker-end="url(#arrow)"/>
 
+<!-- WEEK 6-9 -->
+<rect x="30" y="1532" width="620" height="26" rx="6" class="c-cyber" stroke-width="0.5"/>
+<text class="th" x="340" y="1549" text-anchor="middle">Week 6–9 — cybersecurity extension &amp; security gate (ISO/SAE 21434)</text>
+
+<g class="c-cyber">
+<rect x="40" y="1572" width="180" height="72" rx="8" stroke-width="0.5"/>
+<text class="th" x="130" y="1592" text-anchor="middle">Item &amp; assets</text>
+<text class="ts" x="130" y="1610" text-anchor="middle">Sensor · dataset</text>
+<text class="ts" x="130" y="1626" text-anchor="middle">Model · runtime</text>
+</g>
+
+<g class="c-cyber">
+<rect x="250" y="1572" width="180" height="72" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1592" text-anchor="middle">TARA</text>
+<text class="ts" x="340" y="1610" text-anchor="middle">Adversarial input</text>
+<text class="ts" x="340" y="1626" text-anchor="middle">Tampering · poisoning · DoS</text>
+</g>
+
+<g class="c-cyber">
+<rect x="460" y="1572" width="180" height="72" rx="8" stroke-width="0.5"/>
+<text class="th" x="550" y="1592" text-anchor="middle">Controls</text>
+<text class="ts" x="550" y="1610" text-anchor="middle">SHA256 integrity check</text>
+<text class="ts" x="550" y="1626" text-anchor="middle">Adversarial testing</text>
+</g>
+
+<g class="c-cyber">
+<rect x="90" y="1676" width="220" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="200" y="1696" text-anchor="middle">CSMS documentation</text>
+<text class="ts" x="200" y="1714" text-anchor="middle">TARA report · goals · traceability</text>
+</g>
+
+<g class="c-cyber">
+<rect x="340" y="1676" width="250" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="465" y="1696" text-anchor="middle">Security gate before deployment</text>
+<text class="ts" x="465" y="1714" text-anchor="middle">Integrity + robustness must pass with KPI + latency</text>
+</g>
+
+<g class="c-cyber">
+<rect x="80" y="1752" width="520" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1772" text-anchor="middle">Cybersecurity threats → perception failure → safety risk</text>
+<text class="ts" x="340" y="1790" text-anchor="middle">Model errors, attacks, and deployment decisions must be validated together</text>
+</g>
+
+<line x1="340" y1="1508" x2="340" y2="1532" stroke="#3454D1" stroke-width="0.8" stroke-dasharray="3 2" fill="none"/>
+<text class="ts" x="344" y="1524" style="fill:#3454D1">Week 5 outputs become cyber assets</text>
+
+<line x1="130" y1="1644" x2="200" y2="1676" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1644" x2="200" y2="1676" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1644" x2="465" y2="1676" class="arr" marker-end="url(#arrow)"/>
+<line x1="550" y1="1644" x2="465" y2="1676" class="arr" marker-end="url(#arrow)"/>
+<line x1="200" y1="1728" x2="260" y2="1752" class="arr" marker-end="url(#arrow)"/>
+<line x1="465" y1="1728" x2="420" y2="1752" class="arr" marker-end="url(#arrow)"/>
+
 <!-- WEEK TRANSITIONS -->
 <line x1="340" y1="352" x2="340" y2="362" class="arr" marker-end="url(#arrow)"/>
 <line x1="340" y1="642" x2="340" y2="652" class="arr" marker-end="url(#arrow)"/>
@@ -332,52 +391,58 @@
 <line x1="340" y1="1240" x2="340" y2="1250" class="arr" marker-end="url(#arrow)"/>
 
 <!-- UPGRADE PATH -->
-<rect x="30" y="1532" width="620" height="26" rx="6" fill="none" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
-<text class="th" x="340" y="1549" text-anchor="middle">Upgrade &amp; feedback path</text>
+<rect x="30" y="1828" width="620" height="26" rx="6" fill="none" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+<text class="th" x="340" y="1845" text-anchor="middle">Upgrade &amp; feedback path</text>
 
 <g class="c-gray">
-<rect x="50" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
-<text class="th" x="140" y="1592" text-anchor="middle">Full dataset retraining</text>
-<text class="ts" x="140" y="1610" text-anchor="middle">10k–100k+ frames / ODD</text>
+<rect x="50" y="1868" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="140" y="1888" text-anchor="middle">Full dataset retraining</text>
+<text class="ts" x="140" y="1906" text-anchor="middle">10k–100k+ frames / ODD</text>
 </g>
 <g class="c-gray">
-<rect x="250" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
-<text class="th" x="340" y="1592" text-anchor="middle">YOLOv8s/m upgrade</text>
-<text class="ts" x="340" y="1610" text-anchor="middle">Unfreeze backbone</text>
+<rect x="250" y="1868" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1888" text-anchor="middle">YOLOv8s/m upgrade</text>
+<text class="ts" x="340" y="1906" text-anchor="middle">Unfreeze backbone</text>
 </g>
 <g class="c-gray">
-<rect x="450" y="1572" width="180" height="52" rx="8" stroke-width="0.5"/>
-<text class="th" x="540" y="1592" text-anchor="middle">GPU / TensorRT</text>
-<text class="ts" x="540" y="1610" text-anchor="middle">30 FPS production target</text>
+<rect x="450" y="1868" width="180" height="52" rx="8" stroke-width="0.5"/>
+<text class="th" x="540" y="1888" text-anchor="middle">GPU / TensorRT</text>
+<text class="ts" x="540" y="1906" text-anchor="middle">30 FPS production target</text>
 </g>
 <g class="c-gray">
-<rect x="170" y="1648" width="340" height="44" rx="8" stroke-width="0.5"/>
-<text class="th" x="340" y="1668" text-anchor="middle">Production-gate re-evaluation</text>
-<text class="ts" x="340" y="1684" text-anchor="middle">Close KPI gap → SOP readiness</text>
+<rect x="170" y="1944" width="340" height="44" rx="8" stroke-width="0.5"/>
+<text class="th" x="340" y="1964" text-anchor="middle">Production-gate re-evaluation</text>
+<text class="ts" x="340" y="1980" text-anchor="middle">Close KPI gap + security gap → SOP readiness</text>
 </g>
 
-<line x1="140" y1="1624" x2="230" y2="1648" class="arr" marker-end="url(#arrow)"/>
-<line x1="340" y1="1624" x2="340" y2="1648" class="arr" marker-end="url(#arrow)"/>
-<line x1="540" y1="1624" x2="450" y2="1648" class="arr" marker-end="url(#arrow)"/>
+<line x1="140" y1="1920" x2="230" y2="1944" class="arr" marker-end="url(#arrow)"/>
+<line x1="340" y1="1920" x2="340" y2="1944" class="arr" marker-end="url(#arrow)"/>
+<line x1="540" y1="1920" x2="450" y2="1944" class="arr" marker-end="url(#arrow)"/>
 
 <!-- RETRAIN FEEDBACK LOOP -->
-<path d="M 30 1670 L 18 1670 L 18 478 L 50 478" fill="none" stroke="#BA7517" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
-<text class="ts" x="20" y="1076" style="fill:#BA7517" transform="rotate(-90,20,1076)">retrain loop</text>
+<path d="M 30 1966 L 18 1966 L 18 478 L 50 478" fill="none" stroke="#BA7517" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text class="ts" x="20" y="1220" style="fill:#BA7517" transform="rotate(-90,20,1220)">retrain loop</text>
+
+<!-- SECURITY FEEDBACK LOOP -->
+<path d="M 620 1800 L 652 1800 L 652 1450 L 610 1450" fill="none" stroke="#3454D1" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+<text class="ts" x="646" y="1620" style="fill:#3454D1" transform="rotate(-90,646,1620)">security feedback</text>
 
 <!-- TRACEABILITY SPINE -->
-<line x1="662" y1="98" x2="662" y2="1692" stroke="var(--color-border-tertiary)" stroke-width="0.5" stroke-dasharray="4 3" fill="none"/>
-<circle cx="662" cy="98"  r="3" fill="var(--color-text-secondary)"/>
+<line x1="662" y1="98" x2="662" y2="1992" stroke="var(--color-border-tertiary)" stroke-width="0.5" stroke-dasharray="4 3" fill="none"/>
+<circle cx="662" cy="98" r="3" fill="var(--color-text-secondary)"/>
 <circle cx="662" cy="388" r="3" fill="var(--color-text-secondary)"/>
 <circle cx="662" cy="678" r="3" fill="var(--color-text-secondary)"/>
 <circle cx="662" cy="970" r="3" fill="var(--color-text-secondary)"/>
 <circle cx="662" cy="1276" r="3" fill="var(--color-text-secondary)"/>
-<circle cx="662" cy="1558" r="3" fill="var(--color-text-secondary)"/>
-<text class="ts" x="655" y="100"  text-anchor="end">W1</text>
-<text class="ts" x="655" y="390"  text-anchor="end">W2</text>
-<text class="ts" x="655" y="680"  text-anchor="end">W3</text>
-<text class="ts" x="655" y="972"  text-anchor="end">W4</text>
+<circle cx="662" cy="1545" r="3" fill="var(--color-text-secondary)"/>
+<circle cx="662" cy="1841" r="3" fill="var(--color-text-secondary)"/>
+<text class="ts" x="655" y="100" text-anchor="end">W1</text>
+<text class="ts" x="655" y="390" text-anchor="end">W2</text>
+<text class="ts" x="655" y="680" text-anchor="end">W3</text>
+<text class="ts" x="655" y="972" text-anchor="end">W4</text>
 <text class="ts" x="655" y="1278" text-anchor="end">W5</text>
-<text class="ts" x="655" y="1560" text-anchor="end">SOP</text>
+<text class="ts" x="655" y="1547" text-anchor="end">W6–9</text>
+<text class="ts" x="655" y="1843" text-anchor="end">SOP</text>
 </svg>
 </body>
 </html>
