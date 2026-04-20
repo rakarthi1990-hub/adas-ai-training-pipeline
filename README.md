@@ -162,7 +162,7 @@ CIA triad applied → **Integrity most critical**
 
 ## Full Pipeline Overview
 
-
+```text
 nuScenes mini
 │
 ▼
